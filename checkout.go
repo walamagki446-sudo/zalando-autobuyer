@@ -174,10 +174,10 @@ func (hc *HTTPClient) SearchPickupPoints(address Address) ([]PickupPoint, error)
 					pp.Lon = lon
 				}
 
-				// Only include Instabox or Budbee pickup points
+				// Only include Instabox or Budbee pickup points (provider is already lowercased)
 				isAllowed := false
 				for _, allowed := range allowedProviders {
-					if strings.Contains(strings.ToLower(pp.Provider), allowed) {
+					if strings.Contains(pp.Provider, allowed) {
 						isAllowed = true
 						break
 					}
