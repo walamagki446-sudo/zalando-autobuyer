@@ -69,7 +69,12 @@ class ZalandoCart:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse GraphQL response JSON: {e}")
+                return False
+            
             if data.get('data', {}).get('addToCart', {}).get('success'):
                 self.cart_id = data['data']['addToCart'].get('cartId')
                 logger.info("Successfully added to cart via GraphQL")
@@ -119,7 +124,12 @@ class ZalandoCart:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse REST response JSON: {e}")
+                return False
+            
             if data.get('success'):
                 self.cart_id = data.get('cartId')
                 logger.info("Successfully added to cart via REST")
@@ -182,7 +192,12 @@ class ZalandoCart:
             cart_url = f"{self.client.base_url}/api/cart/{self.cart_id}"
             response = self.client.get(cart_url)
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse cart verification JSON: {e}")
+                return False
+            
             return data.get('items') is not None and len(data.get('items', [])) > 0
             
         except Exception as e:

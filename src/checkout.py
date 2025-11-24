@@ -1,5 +1,6 @@
 """Checkout flow with interactive pickup point selection."""
 
+import json
 import logging
 from typing import List, Dict, Any, Optional
 
@@ -71,7 +72,12 @@ class ZalandoCheckout:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse checkout response JSON: {e}")
+                raise
+            
             checkout_id = data.get('checkoutId')
             
             if checkout_id:
@@ -110,7 +116,12 @@ class ZalandoCheckout:
             }
             
             response = self.client.get(search_url, params=params)
-            data = response.json()
+            
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse pickup points response JSON: {e}")
+                raise
             
             pickup_points = []
             for item in data.get('pickupPoints', []):
@@ -200,7 +211,12 @@ class ZalandoCheckout:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse pickup point selection JSON: {e}")
+                raise
+            
             if data.get('success'):
                 self.selected_pickup_point = pickup_point
                 logger.info("Pickup point selected successfully")
@@ -245,7 +261,12 @@ class ZalandoCheckout:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse home delivery response JSON: {e}")
+                raise
+            
             return data.get('success', False)
             
         except Exception as e:

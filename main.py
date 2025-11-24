@@ -63,19 +63,19 @@ def extract_sku_from_url(product_url: str) -> Optional[str]:
     Returns:
         SKU code if found, None otherwise
     """
-    # Pattern to match Zalando URLs
-    pattern = r'zalando\.[a-z]{2}/[^/]+-([a-z0-9]+-[a-z0-9]+)\.html'
-    match = re.search(pattern, product_url.lower())
+    # Pattern to match Zalando URLs (case-insensitive)
+    pattern = r'zalando\.[a-z]{2}/[^/]+-([a-zA-Z0-9]+-[a-zA-Z0-9]+)\.html'
+    match = re.search(pattern, product_url, re.IGNORECASE)
     
     if match:
-        return match.group(1)
+        return match.group(1).lower()  # Return lowercase for consistency
     
     # Try alternative pattern without .html
-    pattern = r'zalando\.[a-z]{2}/[^/]+-([a-z0-9]+-[a-z0-9]+)'
-    match = re.search(pattern, product_url.lower())
+    pattern = r'zalando\.[a-z]{2}/[^/]+-([a-zA-Z0-9]+-[a-zA-Z0-9]+)'
+    match = re.search(pattern, product_url, re.IGNORECASE)
     
     if match:
-        return match.group(1)
+        return match.group(1).lower()  # Return lowercase for consistency
     
     return None
 

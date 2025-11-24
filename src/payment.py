@@ -1,5 +1,6 @@
 """Payment processing for Zalando checkout."""
 
+import json
 import logging
 from typing import Optional
 
@@ -46,7 +47,11 @@ class ZalandoPayment:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse payment response JSON: {e}")
+                return False
             
             if data.get('success'):
                 self.order_id = data.get('orderId')
@@ -80,7 +85,11 @@ class ZalandoPayment:
                 headers={'Content-Type': 'application/json'}
             )
             
-            data = response.json()
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse order completion response JSON: {e}")
+                return False
             
             if data.get('success'):
                 logger.info("Order completed successfully")
