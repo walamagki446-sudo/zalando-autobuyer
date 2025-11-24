@@ -7,6 +7,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"syscall"
+
+	"golang.org/x/term"
 )
 
 func main() {
@@ -33,8 +36,13 @@ func main() {
 	email = strings.TrimSpace(email)
 
 	fmt.Print("Lösenord: ")
-	password, _ := reader.ReadString('\n')
-	password = strings.TrimSpace(password)
+	passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		LogError("Kunde inte läsa lösenord: %v", err)
+		os.Exit(1)
+	}
+	password := strings.TrimSpace(string(passwordBytes))
+	fmt.Println() // New line after hidden password input
 
 	if err := client.Login(email, password); err != nil {
 		LogError("Inloggning misslyckades: %v", err)

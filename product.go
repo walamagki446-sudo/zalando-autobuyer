@@ -288,7 +288,10 @@ func (hc *HTTPClient) AddToCart(sku, configID string) error {
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response: %v", err)
+	}
 
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("kunde inte lägga till i varukorg: %d - %s", resp.StatusCode, string(body))
