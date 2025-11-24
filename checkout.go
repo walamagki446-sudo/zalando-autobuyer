@@ -145,6 +145,7 @@ func (hc *HTTPClient) SearchPickupPoints(address Address) ([]PickupPoint, error)
 	}
 
 	var pickupPoints []PickupPoint
+	allowedProviders := []string{"instabox", "budbee"}
 
 	if points, ok := result["pickup_points"].([]interface{}); ok {
 		for _, p := range points {
@@ -173,55 +174,34 @@ func (hc *HTTPClient) SearchPickupPoints(address Address) ([]PickupPoint, error)
 					pp.Lon = lon
 				}
 
-				pickupPoints = append(pickupPoints, pp)
+				// Only include Instabox or Budbee pickup points
+				isAllowed := false
+				for _, allowed := range allowedProviders {
+					if strings.Contains(strings.ToLower(pp.Provider), allowed) {
+						isAllowed = true
+						break
+					}
+				}
+
+				if isAllowed {
+					pickupPoints = append(pickupPoints, pp)
+				}
 			}
 		}
 	}
 
-	LogSuccess("Hittade %d upphämtningsställen", len(pickupPoints))
+	LogSuccess("Hittade %d upphämtningsställen (endast Instabox/Budbee)", len(pickupPoints))
 	return pickupPoints, nil
 }
 
-// SelectBestPickupPoint selects the best pickup point (prioritize Instabox/Budbee)
+// SelectBestPickupPoint selects the best pickup point from Instabox/Budbee only
 func SelectBestPickupPoint(points []PickupPoint, preferFarthest bool) *PickupPoint {
 	if len(points) == 0 {
 		return nil
 	}
 
-	// Prioritize Instabox and Budbee
-	preferredProviders := []string{"instabox", "budbee"}
-
-	var preferred []PickupPoint
-	var others []PickupPoint
-
-	for _, point := range points {
-		isPreferred := false
-		for _, provider := range preferredProviders {
-			if strings.Contains(strings.ToLower(point.Provider), provider) {
-				isPreferred = true
-				break
-			}
-		}
-
-		if isPreferred {
-			preferred = append(preferred, point)
-		} else {
-			others = append(others, point)
-		}
-	}
-
-	// Choose from preferred first, then others
-	var candidates []PickupPoint
-	if len(preferred) > 0 {
-		candidates = preferred
-		LogInfo("Hittade %d föredragna upphämtningsställen (Instabox/Budbee)", len(preferred))
-	} else {
-		candidates = others
-	}
-
-	if len(candidates) == 0 {
-		return &points[0]
-	}
+	// All points should already be Instabox or Budbee from filtering
+	LogInfo("Väljer från %d upphämtningsställen (Instabox/Budbee)", len(points))
 
 	// Find closest or farthest based on preference
 	var selected *PickupPoint
@@ -230,16 +210,16 @@ func SelectBestPickupPoint(points []PickupPoint, preferFarthest bool) *PickupPoi
 		extremeDistance = math.Inf(1)
 	}
 
-	for i := range candidates {
+	for i := range points {
 		if preferFarthest {
-			if candidates[i].Distance > extremeDistance {
-				extremeDistance = candidates[i].Distance
-				selected = &candidates[i]
+			if points[i].Distance > extremeDistance {
+				extremeDistance = points[i].Distance
+				selected = &points[i]
 			}
 		} else {
-			if candidates[i].Distance < extremeDistance {
-				extremeDistance = candidates[i].Distance
-				selected = &candidates[i]
+			if points[i].Distance < extremeDistance {
+				extremeDistance = points[i].Distance
+				selected = &points[i]
 			}
 		}
 	}

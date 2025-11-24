@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"golang.org/x/term"
 )
@@ -36,7 +35,8 @@ func main() {
 	email = strings.TrimSpace(email)
 
 	fmt.Print("Lösenord: ")
-	passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
+	// Use os.Stdin.Fd() which works cross-platform (Windows, Linux, macOS)
+	passwordBytes, err := term.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
 		LogError("Kunde inte läsa lösenord: %v", err)
 		os.Exit(1)
@@ -147,7 +147,8 @@ func main() {
 	}
 
 	if len(pickupPoints) == 0 {
-		LogError("Inga upphämtningsställen hittades för denna adress")
+		LogError("Inga Instabox eller Budbee upphämtningsställen hittades för denna adress")
+		LogError("Försök med en annan adress eller postnummer")
 		os.Exit(1)
 	}
 
