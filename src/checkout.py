@@ -44,7 +44,7 @@ class CheckoutManager:
                     button.click()
                     time.sleep(2)
                     return True
-                except:
+                except Exception:
                     continue
             
             # Method 2: Direct URL navigation with API call
@@ -65,7 +65,7 @@ class CheckoutManager:
                     
                     print("✅ Navigated to checkout!")
                     return True
-            except:
+            except Exception:
                 pass
             
             # Method 3: Fallback direct URL
@@ -89,5 +89,5 @@ class CheckoutManager:
             )
             time.sleep(2)
             return True
-        except:
+        except Exception:
             return False

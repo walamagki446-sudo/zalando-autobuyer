@@ -101,9 +101,9 @@ class PickupPointManager:
                     
                     if pickup_points:
                         break
-                except:
+                except Exception:
                     continue
-        except:
+        except Exception:
             pass
         
         return pickup_points

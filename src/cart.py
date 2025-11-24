@@ -90,7 +90,7 @@ class CartManager:
                 try:
                     self.driver.find_element(by, selector)
                     return True
-                except:
+                except Exception:
                     continue
                     
         except:
@@ -121,7 +121,7 @@ class CartManager:
                     cart_link.click()
                     time.sleep(2)
                     return True
-                except:
+                except Exception:
                     continue
             
             # Fallback: Navigate directly to cart URL

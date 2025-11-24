@@ -83,7 +83,7 @@ class ProductManager:
                     if sizes:
                         # Filter out non-size text
                         sizes = [s for s in sizes if s not in ["Välj storlek", "Select size", ""]]
-                except:
+                except Exception:
                     pass
                 
                 # Method 1b: Via aria-controls
@@ -97,7 +97,7 @@ class ProductManager:
                             )
                             sizes = [opt.text.strip() for opt in options if opt.text.strip()]
                             sizes = [s for s in sizes if s not in ["Välj storlek", "Select size", ""]]
-                    except:
+                    except Exception:
                         pass
                 
                 # Method 1c: Look for listbox
@@ -109,7 +109,7 @@ class ProductManager:
                         )
                         sizes = [opt.text.strip() for opt in options if opt.text.strip()]
                         sizes = [s for s in sizes if s not in ["Välj storlek", "Select size", ""]]
-                    except:
+                    except Exception:
                         pass
                 
         except Exception as e:
@@ -127,7 +127,7 @@ class ProductManager:
                     if text in size_patterns or (text.replace('.', '').replace(',', '').isdigit()):
                         if text not in sizes:
                             sizes.append(text)
-            except:
+            except Exception:
                 pass
         
         # Method 3: Look for size-specific attributes
@@ -141,7 +141,7 @@ class ProductManager:
                     text = elem.text.strip() or elem.get_attribute("data-size")
                     if text and text not in sizes:
                         sizes.append(text)
-            except:
+            except Exception:
                 pass
         
         if sizes:
@@ -176,7 +176,7 @@ class ProductManager:
                         time.sleep(1)
                         print(f"✅ Size {size} selected!")
                         return True
-            except:
+            except Exception:
                 pass
             
             # Strategy 2: Find by button text
@@ -188,7 +188,7 @@ class ProductManager:
                         time.sleep(1)
                         print(f"✅ Size {size} selected!")
                         return True
-            except:
+            except Exception:
                 pass
             
             # Strategy 3: Find by aria-label
@@ -201,7 +201,7 @@ class ProductManager:
                 time.sleep(1)
                 print(f"✅ Size {size} selected!")
                 return True
-            except:
+            except Exception:
                 pass
             
             # Strategy 4: Find by data-size attribute
@@ -214,7 +214,7 @@ class ProductManager:
                 time.sleep(1)
                 print(f"✅ Size {size} selected!")
                 return True
-            except:
+            except Exception:
                 pass
             
             print(f"❌ Could not select size {size}")

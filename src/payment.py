@@ -103,7 +103,7 @@ class PaymentManager:
                     result = self.driver.execute_script(script)
                     if result:
                         return result
-                except:
+                except Exception:
                     continue
         except Exception as e:
             print(f"Note: JavaScript detection failed: {str(e)}")
@@ -172,7 +172,7 @@ class PaymentManager:
                     element.click()
                     time.sleep(1)
                     return True
-                except:
+                except Exception:
                     continue
             
         except Exception as e:
