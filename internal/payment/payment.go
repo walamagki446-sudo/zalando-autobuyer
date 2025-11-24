@@ -1,9 +1,12 @@
 package payment
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -65,9 +68,10 @@ func CompletePurchase(ctx context.Context, client *api.Client) error {
 	log.Println("⚠️  Final confirmation required!")
 
 	// Prompt user for final confirmation
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type 'YES' to complete purchase: ")
-	var confirmation string
-	fmt.Scanln(&confirmation)
+	confirmation, _ := reader.ReadString('\n')
+	confirmation = strings.TrimSpace(confirmation)
 
 	if confirmation != "YES" {
 		return fmt.Errorf("purchase cancelled by user")

@@ -107,7 +107,14 @@ func main() {
 	}
 
 	// Select pickup point
-	userAddress := "Stockholm" // Default address
+	fmt.Print("\nEnter your city/address for pickup (or press Enter for default): ")
+	userAddress, _ := reader.ReadString('\n')
+	userAddress = strings.TrimSpace(userAddress)
+	if userAddress == "" {
+		userAddress = "Stockholm" // Default address
+		log.Printf("📍 Using default address: %s", userAddress)
+	}
+
 	if err := checkout.SelectPickupPointOnPage(ctx, apiClient, userAddress); err != nil {
 		log.Printf("⚠️  Failed to select pickup point: %v", err)
 		log.Println("Continuing anyway...")

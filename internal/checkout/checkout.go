@@ -196,5 +196,6 @@ func ExtractSessionID(ctx context.Context) (string, error) {
 
 	// Generate a placeholder if not found
 	log.Println("⚠️  Session ID not found, using placeholder")
-	return "session-" + fmt.Sprintf("%d", time.Now().Unix()), nil
+	timestamp := time.Now().Unix()
+	return fmt.Sprintf("session-%d", timestamp), nil
 }

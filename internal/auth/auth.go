@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/walamagki446-sudo/zalando-autobuyer/internal/browser"
@@ -65,13 +66,7 @@ func Login(ctx context.Context, email, password string) (*models.Session, error)
 
 // ParseCredentials parses email:password format
 func ParseCredentials(input string) (email, password string, err error) {
-	var colonIndex int = -1
-	for i, c := range input {
-		if c == ':' {
-			colonIndex = i
-			break
-		}
-	}
+	colonIndex := strings.Index(input, ":")
 
 	if colonIndex == -1 {
 		return "", "", fmt.Errorf("invalid format: expected 'email:password'")
