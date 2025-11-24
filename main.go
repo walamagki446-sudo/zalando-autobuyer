@@ -12,7 +12,11 @@ import (
 func readInput(prompt string) string {
 	fmt.Print(prompt)
 	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
+	if !scanner.Scan() {
+		if err := scanner.Err(); err != nil {
+			log.Fatalf("❌ Fel vid läsning av input: %v", err)
+		}
+	}
 	return strings.TrimSpace(scanner.Text())
 }
 
@@ -86,7 +90,7 @@ func main() {
 	fmt.Println("✅ Tillagd i kundvagn!\n")
 
 	// STEG 4: Leveransadress
-	fmt.Println("=== STEG 3: LEVERANS ===")
+	fmt.Println("=== STEG 4: LEVERANS ===")
 	address := readInput("Leveransadress (för upphämtning): ")
 	
 	if address == "" {
@@ -135,7 +139,7 @@ func main() {
 	fmt.Println("✅ Upphämtningsställe valt!\n")
 
 	// STEG 6: Betalning
-	fmt.Println("=== STEG 4: BETALNING ===")
+	fmt.Println("=== STEG 5: BETALNING ===")
 	fmt.Println("[INFO] Väljer betalmetod BNPL (Faktura)...")
 	sessionID, err := GetPaymentSessionID(client)
 	if err != nil {
@@ -149,7 +153,7 @@ func main() {
 	fmt.Println("✅ BNPL valt!\n")
 
 	// STEG 7: Bekräftelse
-	fmt.Println("=== STEG 5: BEKRÄFTELSE ===")
+	fmt.Println("=== STEG 6: BEKRÄFTELSE ===")
 	fmt.Println("⚠️  VARNING: Du är på väg att slutföra ett RIKTIGT KÖP!")
 	confirmation := readInput("Skriv 'JA' för att bekräfta köpet: ")
 	
