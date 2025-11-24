@@ -5,6 +5,7 @@ Includes automatic session ID detection.
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import urlparse
 import time
 import json
 import re
@@ -69,7 +70,7 @@ class PaymentManager:
                         # Check request
                         if 'request' in params:
                             url = params['request'].get('url', '')
-                            if 'purchase-session.client-api.payment.zalando.com' in url:
+                            if self._is_valid_payment_api_url(url):
                                 # Extract session ID from URL
                                 match = re.search(r'/sessions/([a-f0-9\-]+)', url)
                                 if match:
@@ -78,7 +79,7 @@ class PaymentManager:
                         # Check response
                         if 'response' in params:
                             url = params['response'].get('url', '')
-                            if 'purchase-session.client-api.payment.zalando.com' in url:
+                            if self._is_valid_payment_api_url(url):
                                 match = re.search(r'/sessions/([a-f0-9\-]+)', url)
                                 if match:
                                     return match.group(1)
@@ -86,6 +87,23 @@ class PaymentManager:
             print(f"Note: Network detection failed: {str(e)}")
         
         return None
+    
+    def _is_valid_payment_api_url(self, url):
+        """
+        Validate that URL is from the trusted Zalando payment API domain.
+        
+        Args:
+            url: URL to validate
+            
+        Returns:
+            bool: True if URL is from trusted domain
+        """
+        try:
+            parsed = urlparse(url)
+            # Check exact hostname match for security
+            return parsed.hostname == 'purchase-session.client-api.payment.zalando.com'
+        except Exception:
+            return False
     
     def _detect_from_javascript(self):
         """Detect session ID from page JavaScript context."""
