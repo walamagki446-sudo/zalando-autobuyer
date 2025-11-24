@@ -291,6 +291,18 @@ The codebase is organized into focused modules:
 - **payment.py** - Payment execution and order completion
 - **main.py** - CLI interface and user interaction flow
 
+### API Endpoints Reference
+
+See [docs/ZALANDO_API_ENDPOINTS.md](docs/ZALANDO_API_ENDPOINTS.md) for detailed documentation of actual Zalando API endpoints discovered through network inspection. This reference includes:
+
+- Authentication endpoints
+- Cart and checkout APIs
+- Pickup point search
+- Payment methods (including BNPL)
+- Browser automation alternatives
+
+**Note:** The current implementation uses simulated API calls for demonstration purposes. Refer to the API documentation for implementing real integrations.
+
 ### Adding New Features
 
 1. Keep modules focused on single responsibility
@@ -298,6 +310,7 @@ The codebase is organized into focused modules:
 3. Update main.py to integrate new features
 4. Test with `--dry-run` mode first
 5. Update README with new usage examples
+6. Review API endpoints documentation for real integration
 
 ## License
 
