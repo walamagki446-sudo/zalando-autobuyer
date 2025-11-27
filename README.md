@@ -39,12 +39,14 @@ go mod tidy
 # For Linux
 go build -o zalando-autobuyer .
 
-# For Windows
-GOOS=windows GOARCH=amd64 go build -o zalando-autobuyer.exe .
+# For Windows (requires Windows with Go and GCC/MinGW)
+go build -o zalando-autobuyer.exe .
 
 # For macOS
-GOOS=darwin GOARCH=amd64 go build -o zalando-autobuyer-mac .
+go build -o zalando-autobuyer-mac .
 ```
+
+Note: Cross-compilation requires platform-specific toolchains due to CGO dependencies (OpenGL). For Windows builds, compile on a Windows machine with MinGW installed.
 
 4. Run the application:
 ```bash
@@ -98,8 +100,10 @@ host:port:username:password
 
 Example:
 ```
-budget.waveproxies.com:1337:username:password
+proxy.example.com:8080:myusername:mypassword
 ```
+
+Proxy is optional - leave the field empty to connect directly without a proxy.
 
 ## Anti-Detection Features
 
