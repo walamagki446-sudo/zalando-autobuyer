@@ -115,5 +115,6 @@ func ParseProxyString(proxyStr string) (host, port, username, password string, e
 	return "", "", "", "", fmt.Errorf("invalid proxy format")
 }
 
-// DefaultProxy is the default proxy from the requirements
-const DefaultProxy = "budget.waveproxies.com:1337:t8lozJLs_pool-custom_type-low_country-SE_fastmode-true:A9e9rK4QaLTudUpK"
+// DefaultProxy is an example proxy format placeholder
+// Users should replace this with their own proxy credentials
+const DefaultProxy = ""

@@ -147,8 +147,7 @@ func (a *AutobuyerApp) createUI() fyne.CanvasObject {
 
 	// Proxy Section
 	a.proxyEntry = widget.NewEntry()
-	a.proxyEntry.SetPlaceHolder("host:port:username:password")
-	a.proxyEntry.SetText(DefaultProxy)
+	a.proxyEntry.SetPlaceHolder("host:port:username:password (optional)")
 
 	proxySection := container.NewVBox(
 		widget.NewLabel("Proxy (host:port:user:pass):"),
@@ -470,15 +469,21 @@ func (a *AutobuyerApp) onCheckout() {
 		}
 
 		// Add to cart if not already added
-		if a.selectedSize != nil && (a.cartManager == nil || !a.cartManager.HasItem(a.selectedSize.SKU)) {
-			a.log(fmt.Sprintf("Adding to cart: %s...", a.selectedSize.SKU))
-			if err := a.cartManager.AddToCart(a.selectedSize.SKU, 1); err != nil {
-				a.log(fmt.Sprintf("Error adding to cart: %v", err))
-				ErrorDelay()
-				return
+		if a.selectedSize != nil {
+			shouldAddToCart := true
+			if a.cartManager != nil && a.cartManager.HasItem(a.selectedSize.SKU) {
+				shouldAddToCart = false
 			}
-			a.log("Added to cart!")
-			HumanDelay()
+			if shouldAddToCart {
+				a.log(fmt.Sprintf("Adding to cart: %s...", a.selectedSize.SKU))
+				if err := a.cartManager.AddToCart(a.selectedSize.SKU, 1); err != nil {
+					a.log(fmt.Sprintf("Error adding to cart: %v", err))
+					ErrorDelay()
+					return
+				}
+				a.log("Added to cart!")
+				HumanDelay()
+			}
 		}
 		a.progressBar.SetValue(40)
 

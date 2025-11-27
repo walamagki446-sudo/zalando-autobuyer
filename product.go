@@ -473,8 +473,23 @@ func (pf *ProductFetcher) extractBrand(html string) string {
 
 // ValidateProductURL validates if the URL is a valid Zalando product URL
 func ValidateProductURL(urlStr string) bool {
-	return strings.Contains(urlStr, "zalando.") && 
-		(strings.Contains(urlStr, "/") && !strings.HasSuffix(urlStr, ".zalando.com") && !strings.HasSuffix(urlStr, ".zalando.se"))
+	// Must be a valid URL with zalando domain and have a product path
+	if !strings.Contains(urlStr, "zalando.") {
+		return false
+	}
+	// Should have a path after the domain (i.e., not just the homepage)
+	parts := strings.SplitN(urlStr, "zalando.", 2)
+	if len(parts) < 2 {
+		return false
+	}
+	afterDomain := parts[1]
+	// Check if there's content after the TLD (e.g., ".se/product")
+	slashIdx := strings.Index(afterDomain, "/")
+	if slashIdx == -1 {
+		return false
+	}
+	// Should have something after the first slash
+	return len(afterDomain) > slashIdx+1
 }
 
 // GetAvailableSizes returns only available sizes

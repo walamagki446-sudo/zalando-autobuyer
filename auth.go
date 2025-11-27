@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -301,7 +302,7 @@ func RandomIntBetween(min, max int) int {
 	if min >= max {
 		return min
 	}
-	return min + int(uint32(max-min+1)&0x7fffffff)
+	return min + rand.Intn(max-min+1)
 }
 
 // CheckZalandoLogin checks if the provided credentials are valid
